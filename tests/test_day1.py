@@ -1,6 +1,7 @@
 import os
 
-import aoc2020.core as co
+import aoc2020.day1 as d1
+import tests.test_common as tc
 
 from aoc2020 import __version__
 
@@ -9,13 +10,10 @@ def test_version():
     assert __version__ == '0.1.0'
 
 
-TESTDIR = os.path.dirname(__file__)
-TESTINPUTDIR = os.path.join(TESTDIR, 'inputs')
-
 class TestExpenseReport():
 
-    class_ = co.ExpenseReport
-    file = os.path.join(TESTINPUTDIR, 'day1')
+    class_ = d1.ExpenseReport
+    file = os.path.join(tc.TESTINPUTDIR, 'day1')
 
     def test_input_reader_all_ints(self):
 
