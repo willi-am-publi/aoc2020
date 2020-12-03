@@ -1,6 +1,27 @@
 import typing as typ
 import re
 
+def sled_policy(
+    first_num:int,
+    second_num:int,
+    letter:str,
+    entry:str,
+) -> bool:
+    matches = len(re.findall(
+        letter,
+        entry
+    ))
+    return first_num <= matches <= second_num
+
+def toboggan_policy(
+    first_num:int,
+    second_num:int,
+    letter:str,
+    entry:str,
+) -> bool:
+    return ((entry[first_num-1] == letter)
+            != (entry[second_num-1] == letter)
+    )
 
 class Password():
     """
@@ -9,31 +30,31 @@ class Password():
 
     def __init__(
             self,
-            lower_limit:int,
-            upper_limit:int,
+            first_num:int,
+            second_num:int,
             letter:str,
             entry:str
     ):
         """s/e
 
         Args:
-            lower_limit (int): letter count lower limit
-            upper_limit (int): letter count upper limit
+            first_num (int): letter count lower limit
+            second_num (int): letter count upper limit
             letter (str): letter of interest
             entry (str): (possibbly corrupted) entry password
         """
-        self.ll = lower_limit
-        self.ul = upper_limit
-        self.letter = letter
-        self.entry = entry
+        self.kwargs = {
+            "first_num": first_num,
+            "second_num": second_num,
+            "letter": letter,
+            "entry": entry,
+        }
 
-    @property
-    def is_valid(self) -> bool:
-        matches = len(re.findall(
-            self.letter,
-            self.entry
-        ))
-        return self.ll <= matches <= self.ul
+    def is_valid(
+        self,
+        policy: typ.Optional[typ.Callable] = sled_policy
+    ) -> bool:
+        return policy(**self.kwargs)
 
 
 class PasswordDB():
@@ -107,5 +128,5 @@ class PasswordDB():
         entries = cls._input_reader(
             file_path = file_path
         )
-        return sum([Password(*entry).is_valid
+        return sum([Password(*entry).is_valid()
                     for entry in entries])
