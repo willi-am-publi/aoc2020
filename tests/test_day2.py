@@ -10,25 +10,48 @@ class TestPassword():
     class_ = d2.Password
 
     @pt.mark.parametrize(
-        "ll, ul, l, e, iv",
+        "fn, sn, l, e, iv",
         [
             (1, 3, "a", "abcde", True),
             (2, 9, "c", "ccccccccc", True),
             (1, 3, "b", "cdefg", False)
         ]
     )
-    def test_is_valid(
+    def test_is_valid_sled(
         self,
-        ll:int, ul:int, l:str, e:str,
+        fn:int, sn:int, l:str, e:str,
         iv: bool
     ):    
         password = self.class_(
-            lower_limit=ll,
-            upper_limit=ul,
+            first_num=fn,
+            second_num=sn,
             letter=l,
             entry=e
         )
-        assert password.is_valid == iv
+        assert password.is_valid() == iv
+
+    @pt.mark.parametrize(
+        "fn, sn, l, e, iv",
+        [
+            (1, 3, "a", "abcde", True),
+            (2, 9, "c", "ccccccccc", False),
+            (1, 3, "b", "cdefg", False)
+        ]
+    )
+    def test_is_valid_toboggan(
+        self,
+        fn:int, sn:int, l:str, e:str,
+        iv: bool
+    ):    
+        password = self.class_(
+            first_num=fn,
+            second_num=sn,
+            letter=l,
+            entry=e
+        )
+        assert password.is_valid(
+            policy=d2.toboggan_policy
+        ) == iv
 
 
 class TestPasswordDB():
